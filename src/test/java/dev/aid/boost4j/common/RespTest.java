@@ -3,6 +3,8 @@ package dev.aid.boost4j.common;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -33,8 +35,13 @@ public class RespTest {
 
         // 异常失败
         Resp withExp = Resp.fail(new IllegalAccessException("exception fail"));
+        assertEquals("exception fail", withExp.getMsg());
+        assertEquals(500, withExp.getCode());
 
-
+        // msg+code失败
+        Resp failCode = Resp.fail("errMsg", RespCode.NOT_FOUND);
+        assertEquals(404, failCode.getCode());
+        assertEquals("errMsg", failCode.getMsg());
     }
 
 }
