@@ -46,4 +46,11 @@ public class Params {
         }
         return paramUrl.substring(0, paramUrl.length() - 1);
     }
+
+    /**
+     * 获取构建好的map
+     */
+    public Map<String, String> get() {
+        return map;
+    }
 }

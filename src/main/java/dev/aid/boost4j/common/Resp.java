@@ -66,7 +66,8 @@ public class Resp {
      * @return Resp msg=> ${Exception}.msg; code=> "500"
      */
     public static Resp fail(Exception exception) {
-        return new Resp().setCode(RespCode.SYSTEM_EXCEPTION.getVal()).setMsg(exception.getMessage());
+        return new Resp().setCode(RespCode.SYSTEM_EXCEPTION.getVal())
+                .setMsg(exception.getMessage()).setExpStack(exception.getStackTrace());
     }
 
     /**

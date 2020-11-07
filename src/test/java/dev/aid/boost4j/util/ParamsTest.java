@@ -14,10 +14,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ParamsTest {
 
-
     @Test
     @DisplayName("正常拼接")
-    public void TestNormal() {
+    public void testNormal() {
         String result = Params.n().add("name", "daming")
                 .add("age", "1").build();
         assertEquals("?name=daming&age=1", result);
@@ -25,7 +24,7 @@ public class ParamsTest {
 
     @Test
     @DisplayName("空参数")
-    public void TestEmpty() {
+    public void testEmpty() {
         String result = Params.n().build();
         assertEquals("", result);
     }
