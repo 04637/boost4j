@@ -35,17 +35,17 @@ public class Resp {
      * @return Resp msg=> "ok"; code=> "200"
      */
     public static Resp ok(Object data) {
-        return new Resp().setData(data).setCode(RespCode.OK.getVal()).setMsg("ok");
+        return new Resp().setData(data).setCode(Code.OK.getVal()).setMsg("ok").setSucceed(true);
     }
 
     /**
      * 处理失败, 返回指定错误提示, 指定异常代码
      *
      * @param errMsg  错误提示信息
-     * @param expCode 错误代码  {@link RespCode}
+     * @param expCode 错误代码  {@link Code}
      * @return Resp msg=> ${errMsg}; code=> ${expCode}
      */
-    public static Resp fail(String errMsg, RespCode expCode) {
+    public static Resp fail(String errMsg, Code expCode) {
         return new Resp().setMsg(errMsg).setCode(expCode.getVal());
     }
 
@@ -56,7 +56,7 @@ public class Resp {
      * @return Resp msg=> ${errMsg}; code=> "500"
      */
     public static Resp fail(String errMsg) {
-        return new Resp().setCode(RespCode.SYSTEM_EXCEPTION.getVal()).setMsg(errMsg);
+        return new Resp().setCode(Code.SYSTEM_EXCEPTION.getVal()).setMsg(errMsg);
     }
 
     /**
@@ -66,7 +66,7 @@ public class Resp {
      * @return Resp msg=> ${Exception}.msg; code=> "500"
      */
     public static Resp fail(Exception exception) {
-        return new Resp().setCode(RespCode.SYSTEM_EXCEPTION.getVal())
+        return new Resp().setCode(Code.SYSTEM_EXCEPTION.getVal())
                 .setMsg(exception.getMessage()).setExpStack(exception.getStackTrace());
     }
 
@@ -77,7 +77,18 @@ public class Resp {
      * @return Resp msg=> ${errMsg}; code=> "400"
      */
     public static Resp unProcess(String errMsg) {
-        return new Resp().setCode(RespCode.UNPROCESSABLE_ENTITY.getVal()).setMsg(errMsg);
+        return new Resp().setCode(Code.UNPROCESSABLE_ENTITY.getVal()).setMsg(errMsg);
+    }
+
+    /**
+     * 参数校验失败调用该响应
+     *
+     * @param data 包含失败的参数及提示
+     * @return Resp code=> "400"; data=> ${data}
+     */
+    public static Resp unProcess(Object data) {
+        return new Resp().setCode(Code.UNPROCESSABLE_ENTITY.getVal()).setData(data)
+                .setMsg("参数校验失败");
     }
 
     /**
@@ -87,7 +98,7 @@ public class Resp {
      * @return Resp msg=> ${errMsg}; code=> "404"
      */
     public static Resp notFound(String errMsg) {
-        return new Resp().setCode(RespCode.NOT_FOUND.getVal()).setMsg(errMsg);
+        return new Resp().setCode(Code.NOT_FOUND.getVal()).setMsg(errMsg);
     }
 
     /**
@@ -96,7 +107,7 @@ public class Resp {
      * @return Resp code=> "401"; msg=> "需要认证信息"
      */
     public static Resp noAuth() {
-        return new Resp().setCode(RespCode.UNAUTHORIZED.getVal()).setMsg("需要认证信息");
+        return new Resp().setCode(Code.UNAUTHORIZED.getVal()).setMsg("需要认证信息");
     }
 
     /**
@@ -105,6 +116,6 @@ public class Resp {
      * @return Resp code=> "403"; msg=> "权限不足"
      */
     public static Resp denied() {
-        return new Resp().setCode(RespCode.PERMISSION_DENIED.getVal()).setMsg("权限不足");
+        return new Resp().setCode(Code.PERMISSION_DENIED.getVal()).setMsg("权限不足");
     }
 }

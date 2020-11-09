@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * 统一响应体测试
@@ -22,6 +23,7 @@ public class RespTest {
         Resp result = Resp.ok(data);
         assertEquals(200, result.getCode());
         assertEquals("mydata", result.getData());
+        assertTrue(result.isSucceed());
     }
 
     @Test
@@ -43,7 +45,7 @@ public class RespTest {
 
         // msg+code失败
         msg = "code fail";
-        Resp failCode = Resp.fail(msg, RespCode.NOT_FOUND);
+        Resp failCode = Resp.fail(msg, Code.NOT_FOUND);
         assertEquals(404, failCode.getCode());
         assertEquals(msg, failCode.getMsg());
 

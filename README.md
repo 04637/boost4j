@@ -14,7 +14,7 @@ An out-of-the-box library for java web.
 3. 加解密
 4. 雪花ID √   //解决雪花时钟回拨问题, 隐藏构造, 生成效率较UUID提升60%+
 5. 参数校验 (附带断言式判断)
-6. 统一异常
+6. 统一异常 √
 7. 时间戳转Timestamp(XKKT) √
 8. 文件上传
 9. 日期工具类获取当前数据
@@ -23,6 +23,8 @@ An out-of-the-box library for java web.
 12. sonar通知
 13. 异步执行
 14. 类似mbp的类生成
+15. 日志直接获取对应class
+16. maven打包成一个引用方便
 ## 大
 1. 轻量缓存
 2. 接口文档生成

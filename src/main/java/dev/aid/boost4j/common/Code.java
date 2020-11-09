@@ -6,7 +6,7 @@ package dev.aid.boost4j.common;
  * @author 04637@163.com
  * @date 2020/11/6
  */
-public enum RespCode {
+public enum Code {
     // 默认系统异常
     SYSTEM_EXCEPTION(500),
 
@@ -27,7 +27,7 @@ public enum RespCode {
 
     private final int val;
 
-    RespCode(int val) {
+    Code(int val) {
         this.val = val;
     }
 
