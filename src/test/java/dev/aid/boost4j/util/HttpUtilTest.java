@@ -18,14 +18,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author 04637@163.com
  * @date 2020/11/6
  */
-public class HttpTest {
+public class HttpUtilTest {
 
     private static final String BASE_URL = "http://httpbin.org/";
 
     @Test
     @DisplayName("get请求")
     public void testGet() {
-        Resp resp = Http.get(BASE_URL + "get",
+        Resp resp = HttpUtil.get(BASE_URL + "get",
                 Params.n().add("hello", "world"),
                 Params.n().add("Authorization", "eyJraWQiOiJjb2xsZWFn"));
         assertEquals("world", getArg(resp, "hello"));
@@ -36,10 +36,11 @@ public class HttpTest {
     @Test
     @DisplayName("超时get请求")
     public void testGetTimeout() {
-        Resp resp = Http.get(BASE_URL + "delay/10");
+        Resp resp = HttpUtil.get(BASE_URL + "delay/10");
         assertEquals(500, resp.getCode());
         assertFalse(resp.isSucceed());
-        assertEquals("timeout", resp.getMsg());
+        assertTrue(resp.getMsg().equals("Read timed out")
+                || resp.getMsg().equals("timeout"));
     }
 
     @Test
@@ -47,7 +48,7 @@ public class HttpTest {
     public void testPost() {
         JSONObject jo = new JSONObject();
         jo.put("hello", "world");
-        Resp resp = Http.post("http://httpbin.org/post", jo);
+        Resp resp = HttpUtil.post("http://httpbin.org/post", jo);
         assertEquals(200, resp.getCode());
         assertTrue(resp.isSucceed());
         assertEquals("{\"hello\":\"world\"}", getData(resp));
@@ -56,10 +57,11 @@ public class HttpTest {
     @Test
     @DisplayName("超时post请求")
     public void testPostTimeout() {
-        Resp resp = Http.post(BASE_URL + "delay/1000");
+        Resp resp = HttpUtil.post(BASE_URL + "delay/1000");
         assertEquals(500, resp.getCode());
         assertFalse(resp.isSucceed());
-        assertEquals("timeout", resp.getMsg());
+        assertTrue(resp.getMsg().equals("Read timed out")
+                || resp.getMsg().equals("timeout"));
     }
 
     private String getHeader(Resp resp, String name) {

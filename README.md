@@ -17,7 +17,7 @@ An out-of-the-box library for java web.
 6. 统一异常 √
 7. 时间戳转Timestamp(XKKT) √
 8. 文件上传
-9. 日期工具类获取当前数据
+9. 日期工具类获取当前数据 √
 10. 分页转换
 11. fhIM通知
 12. sonar通知

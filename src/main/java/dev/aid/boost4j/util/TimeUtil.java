@@ -9,7 +9,7 @@ import java.util.Calendar;
  * @author 04637@163.com
  * @date 2020/11/7
  */
-public class Time {
+public class TimeUtil {
 
     /**
      * 将长整形时间戳转为sql中的时间戳 {@link Timestamp}

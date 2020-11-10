@@ -63,6 +63,19 @@ public class ExpHandlerTest {
         assertEquals(500, withMsg.getCode());
         assertFalse(withMsg.isSucceed());
         assertEquals("出错啦", withMsg.getMsg());
+
+        // 因异常抛出的异常
+        Resp withExp = testTemplate.getForObject(BASE + "serviceExp", Resp.class);
+        assertEquals(403, withExp.getCode());
+        assertFalse(withExp.isSucceed());
+        assertEquals("权限不足", withExp.getMsg());
+
+        // 其他异常, 测试保底异常处理
+        Resp otherExp = testTemplate.getForObject(BASE + "otherExp", Resp.class);
+        assertFalse(otherExp.isSucceed());
+        assertEquals(500, otherExp.getCode());
+        assertEquals("未知异常: javax.naming.NoPermissionException, 请向开发人员反馈 expStack",
+                otherExp.getMsg());
     }
 
     @Test
@@ -84,24 +97,26 @@ public class ExpHandlerTest {
     public void testArgExp() throws Exception {
         // 转换失败异常  HttpMessageNotReadableException
         JSONObject arg = new JSONObject();
-        arg.put("bindFailed", "123");
+        arg.put("bindFailed", "abc");
         arg.put("maxLength", "12345678");
         arg.put("notEmpty", "");
         Resp resp = testTemplate.postForObject(BASE + "arg", arg, Resp.class);
         mvc.perform(MockMvcRequestBuilders.post(BASE + "arg")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(arg.toJSONString()));
-        // Resp resp1 = testTemplate.getForObject(BASE+"arg?bindFailed=123&maxLength=123456", Resp.class);
-        System.out.println(resp);
-        // assertFalse(resp.isSucceed());
-        // assertEquals(400, resp.getCode());
-        // assertEquals("JSON parse error: Cannot deserialize value of type `int` from String \"abc\": not a valid Integer value; nested exception is com.fasterxml.jackson.databind.exc.InvalidFormatException: Cannot deserialize value of type `int` from String \"abc\": not a valid Integer value\n" +
-        //                 " at [Source: (PushbackInputStream); line: 1, column: 15] (through reference chain: dev.aid.boost4j.exp.ArgTest[\"bindFailed\"])",
-        //         resp.getMsg());
-        // // 长度超出校验失败异常
-        // arg.put("bindFailed", "123");
-        // arg.put("maxLength", "12345678");
-        // resp = testTemplate.postForObject(BASE + "arg", arg, Resp.class);
-        // System.out.println(resp);
+        assertEquals("JSON parse error: Cannot deserialize value of type `int` from String \"abc\": not a valid Integer value; nested exception is com.fasterxml.jackson.databind.exc.InvalidFormatException: Cannot deserialize value of type `int` from String \"abc\": not a valid Integer value\n" +
+                " at [Source: (PushbackInputStream); line: 1, column: 15] (through reference chain: dev.aid.boost4j.exp.ArgTest[\"bindFailed\"])", resp.getMsg());
+        assertFalse(resp.isSucceed());
+        assertEquals(400, resp.getCode());
+        // 校验异常
+        arg.put("bindFailed", "8");
+        resp = testTemplate.postForObject(BASE + "arg", arg, Resp.class);
+        mvc.perform(MockMvcRequestBuilders.post(BASE + "arg")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(arg.toJSONString()));
+        assertFalse(resp.isSucceed());
+        assertEquals("参数校验失败", resp.getMsg());
+        assertEquals("{notEmpty=该参数不能为空哦, maxLength=长度超长了}", resp.getData().toString());
+        assertEquals(400, resp.getCode());
     }
 }

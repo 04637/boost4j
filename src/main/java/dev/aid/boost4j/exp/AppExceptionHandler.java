@@ -120,4 +120,23 @@ public class AppExceptionHandler {
                 .setExpStack(e.getStackTrace());
     }
 
+    /**
+     * 其他异常处理
+     *
+     * @param e 其他异常
+     */
+    @ExceptionHandler(Exception.class)
+    public Resp handleException(Exception e) {
+        String msg = "未知异常: " + e.getClass().getName() + ", 请向开发人员反馈 expStack";
+        try {
+            if (!e.getMessage().isEmpty()) {
+                msg = e.getMessage();
+            }
+        } catch (Exception ignored) {
+        }
+        return new Resp().setCode(Code.SYSTEM_EXCEPTION.getVal())
+                .setMsg(msg)
+                .setExpStack(e.getStackTrace());
+    }
+
 }

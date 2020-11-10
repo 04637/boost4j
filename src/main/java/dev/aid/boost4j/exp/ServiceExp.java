@@ -25,8 +25,9 @@ public class ServiceExp extends BaseException {
         super("业务层异常, 请向开发人员反馈 expStack");
     }
 
-    public void setExpCode(Code expCode) {
+    public ServiceExp setExpCode(Code expCode) {
         this.expCode = expCode;
+        return this;
     }
 
     public Code getExpCode() {

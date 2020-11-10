@@ -20,7 +20,7 @@ import okhttp3.ResponseBody;
  * @author 04637@163.com
  * @date 2020/11/5
  */
-public class Http {
+public class HttpUtil {
 
     // default timeout is 10 seconds:  https://www.baeldung.com/okhttp-timeouts#:~:text=A%20connect%20timeout%20defines%20a,its%20value%20using%20the%20OkHttpClient.
     private static final OkHttpClient client = new OkHttpClient();
@@ -120,7 +120,7 @@ public class Http {
         return !url.startsWith("http://") && !url.startsWith("https://");
     }
 
-    private Http() {
+    private HttpUtil() {
     }
 
 }

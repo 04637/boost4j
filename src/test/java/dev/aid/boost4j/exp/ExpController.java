@@ -5,8 +5,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.naming.NoPermissionException;
 import javax.validation.Valid;
 
+import dev.aid.boost4j.common.Code;
 import dev.aid.boost4j.common.Resp;
 
 /**
@@ -28,6 +30,16 @@ public class ExpController {
     @RequestMapping("/serviceWithMsg")
     public Resp serviceExpMsg(String msg) {
         throw new ServiceExp(msg);
+    }
+
+    @RequestMapping("/serviceExp")
+    public Resp serviceExpThrow() {
+        throw new ServiceExp(new NoPermissionException()).setExpCode(Code.PERMISSION_DENIED);
+    }
+
+    @RequestMapping("/otherExp")
+    public Resp otherExp() throws NoPermissionException {
+        throw new NoPermissionException();
     }
 
     @RequestMapping("/dao")
