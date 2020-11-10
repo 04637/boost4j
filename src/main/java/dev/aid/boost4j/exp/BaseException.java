@@ -9,22 +9,23 @@ package dev.aid.boost4j.exp;
 public class BaseException extends RuntimeException {
 
     // 源异常, 记录原始异常方便问题追踪
-    private Throwable throwable;
+    private Throwable originalExp;
 
     public BaseException(String msg) {
         super(msg);
     }
 
-    public BaseException(Throwable throwable) {
-        super(throwable.getMessage());
-        this.throwable = throwable;
+    public BaseException(Throwable originalExp) {
+        super(originalExp.getMessage());
+        this.originalExp = originalExp;
     }
 
-    public void setThrowable(Throwable throwable) {
-        this.throwable = throwable;
+    public BaseException setOriginalExp(Throwable originalExp) {
+        this.originalExp = originalExp;
+        return this;
     }
 
-    public Throwable getThrowable() {
-        return throwable;
+    public Throwable getOriginalExp() {
+        return originalExp;
     }
 }

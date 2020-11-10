@@ -10,6 +10,7 @@ import javax.validation.Valid;
 
 import dev.aid.boost4j.common.Code;
 import dev.aid.boost4j.common.Resp;
+import dev.aid.boost4j.util.AssertUtil;
 
 /**
  * 异常测试用controller
@@ -40,6 +41,12 @@ public class ExpController {
     @RequestMapping("/otherExp")
     public Resp otherExp() throws NoPermissionException {
         throw new NoPermissionException();
+    }
+
+    @RequestMapping("/paramExp")
+    public Resp paramExp() {
+        AssertUtil.notEmpty("", "mama");
+        return Resp.ok("im ok");
     }
 
     @RequestMapping("/dao")

@@ -3,6 +3,7 @@ package dev.aid.boost4j.util;
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import dev.aid.boost4j.common.Resp;
 import okhttp3.Headers;
@@ -22,8 +23,15 @@ import okhttp3.ResponseBody;
  */
 public class HttpUtil {
 
+    // 连接超时 单位 [秒]
+    private static final int CONNECT_TIMEOUT = 10;
+    // 读取超时 单位 [秒]
+    private static final int READ_TIMEOUT = 10;
+
     // default timeout is 10 seconds:  https://www.baeldung.com/okhttp-timeouts#:~:text=A%20connect%20timeout%20defines%20a,its%20value%20using%20the%20OkHttpClient.
-    private static final OkHttpClient client = new OkHttpClient();
+    private static final OkHttpClient client = new OkHttpClient.Builder()
+            .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
+            .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS).build();
 
 
     /**

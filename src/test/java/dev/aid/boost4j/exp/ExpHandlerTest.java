@@ -3,7 +3,6 @@ package dev.aid.boost4j.exp;
 
 import com.alibaba.fastjson.JSONObject;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
@@ -11,17 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
+
+import javax.naming.NoPermissionException;
 
 import dev.aid.boost4j.common.Resp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * 异常处理器测试
@@ -38,17 +35,7 @@ public class ExpHandlerTest {
     @Autowired
     private TestRestTemplate testTemplate;
 
-    @Autowired
-    private WebApplicationContext wac;
-
-    private MockMvc mvc;
-
     private static final String BASE = "http://localhost:8080/expTest/";
-
-    @Before
-    public void setupMockMvc() {
-        mvc = MockMvcBuilders.webAppContextSetup(wac).build();
-    }
 
     @Test
     @DisplayName("业务层异常")
@@ -93,6 +80,19 @@ public class ExpHandlerTest {
     }
 
     @Test
+    @DisplayName("包装异常")
+    public void testPackExp() {
+        try {
+            throw new ServiceExp().setOriginalExp(new NoPermissionException("权限异常0"));
+        } catch (ServiceExp e) {
+            assertNotNull(e.getOriginalExp());
+            assertEquals("javax.naming.NoPermissionException",
+                    e.getOriginalExp().getClass().getName());
+            assertEquals("业务层异常, 请向开发人员反馈 expStack", e.getMessage());
+        }
+    }
+
+    @Test
     @DisplayName("参数异常")
     public void testArgExp() throws Exception {
         // 转换失败异常  HttpMessageNotReadableException
@@ -101,9 +101,6 @@ public class ExpHandlerTest {
         arg.put("maxLength", "12345678");
         arg.put("notEmpty", "");
         Resp resp = testTemplate.postForObject(BASE + "arg", arg, Resp.class);
-        mvc.perform(MockMvcRequestBuilders.post(BASE + "arg")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(arg.toJSONString()));
         assertEquals("JSON parse error: Cannot deserialize value of type `int` from String \"abc\": not a valid Integer value; nested exception is com.fasterxml.jackson.databind.exc.InvalidFormatException: Cannot deserialize value of type `int` from String \"abc\": not a valid Integer value\n" +
                 " at [Source: (PushbackInputStream); line: 1, column: 15] (through reference chain: dev.aid.boost4j.exp.ArgTest[\"bindFailed\"])", resp.getMsg());
         assertFalse(resp.isSucceed());
@@ -111,12 +108,19 @@ public class ExpHandlerTest {
         // 校验异常
         arg.put("bindFailed", "8");
         resp = testTemplate.postForObject(BASE + "arg", arg, Resp.class);
-        mvc.perform(MockMvcRequestBuilders.post(BASE + "arg")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(arg.toJSONString()));
         assertFalse(resp.isSucceed());
         assertEquals("参数校验失败", resp.getMsg());
         assertEquals("{notEmpty=该参数不能为空哦, maxLength=长度超长了}", resp.getData().toString());
+        assertEquals(400, resp.getCode());
+    }
+
+
+    @Test
+    @DisplayName("断言出错异常")
+    public void testAssertExp() {
+        Resp resp = testTemplate.getForObject(BASE + "paramExp", Resp.class);
+        assertFalse(resp.isSucceed());
+        assertEquals("mama 不能为空", resp.getMsg());
         assertEquals(400, resp.getCode());
     }
 }

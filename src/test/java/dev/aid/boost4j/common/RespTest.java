@@ -19,11 +19,16 @@ public class RespTest {
     @Test
     @DisplayName("正常响应")
     public void testOk() {
-        String data = "mydata";
+        Object data = "mydata";
         Resp result = Resp.ok(data);
         assertEquals(200, result.getCode());
         assertEquals("mydata", result.getData());
         assertTrue(result.isSucceed());
+
+        Resp onlyMsg = Resp.ok("hello");
+        assertEquals(200, onlyMsg.getCode());
+        assertEquals("hello", onlyMsg.getMsg());
+        assertTrue(onlyMsg.isSucceed());
     }
 
     @Test

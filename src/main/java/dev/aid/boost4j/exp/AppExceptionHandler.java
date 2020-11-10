@@ -48,6 +48,17 @@ public class AppExceptionHandler {
     }
 
     /**
+     * 统一处理自抛出的参数异常
+     *
+     * @param e {@link ParamExp}
+     * @return code: 400
+     */
+    @ExceptionHandler(ParamExp.class)
+    public Resp handleParamException(ParamExp e) {
+        return Resp.unProcess(e.getMessage());
+    }
+
+    /**
      * 当使用@RequestBody类型转换失败时会报该异常
      *
      * @param e json转换失败时异常
