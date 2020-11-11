@@ -20,7 +20,7 @@ An out-of-the-box library for java web.
 10. 分页转换 √
 11. fhIM通知
 12. sonar通知
-13. 异步执行
+13. 异步执行  https://juejin.im/post/6844903943739277320
 14. 类似mbp的类生成
 15. 日志直接获取对应class 
 16. maven打包成一个引用方便
