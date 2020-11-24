@@ -1,16 +1,11 @@
 package dev.aid.boost4j.common;
 
-import lombok.Data;
-import lombok.experimental.Accessors;
-
 /**
  * 统一响应体
  *
  * @author 04637@163.com
  * @date 2020/11/6
  */
-@Data
-@Accessors(chain = true)
 public class Resp {
 
     // 标志请求是否处理成功
@@ -127,5 +122,50 @@ public class Resp {
      */
     public static Resp denied() {
         return new Resp().setCode(Code.PERMISSION_DENIED.getVal()).setMsg("权限不足");
+    }
+
+    public boolean isSucceed() {
+        return succeed;
+    }
+
+    public Resp setSucceed(boolean succeed) {
+        this.succeed = succeed;
+        return this;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public Resp setMsg(String msg) {
+        this.msg = msg;
+        return this;
+    }
+
+    public Object getData() {
+        return data;
+    }
+
+    public Resp setData(Object data) {
+        this.data = data;
+        return this;
+    }
+
+    public StackTraceElement[] getExpStack() {
+        return expStack;
+    }
+
+    public Resp setExpStack(StackTraceElement[] expStack) {
+        this.expStack = expStack;
+        return this;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public Resp setCode(int code) {
+        this.code = code;
+        return this;
     }
 }

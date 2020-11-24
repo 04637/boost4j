@@ -14,9 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-
 import dev.aid.boost4j.common.Code;
 import dev.aid.boost4j.common.Resp;
 
@@ -29,6 +26,8 @@ import dev.aid.boost4j.common.Resp;
 @RestControllerAdvice
 public class AppExceptionHandler {
 
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AppExceptionHandler.class);
+
     //############ 参数相关异常 => start ###########
 
     /**
@@ -38,6 +37,7 @@ public class AppExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Resp handleArgumentValidException(MethodArgumentNotValidException e) {
+        printStack(e);
         BindingResult bindingResult = e.getBindingResult();
         Map<String, String> map = new HashMap<>();
         List<FieldError> list = bindingResult.getFieldErrors();
@@ -55,6 +55,7 @@ public class AppExceptionHandler {
      */
     @ExceptionHandler(ParamExp.class)
     public Resp handleParamException(ParamExp e) {
+        printStack(e);
         return Resp.unProcess(e.getMessage());
     }
 
@@ -66,6 +67,7 @@ public class AppExceptionHandler {
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Resp handleHttpNotReadable(HttpMessageNotReadableException e) {
+        printStack(e);
         return Resp.unProcess(e.getMessage());
     }
 
@@ -76,21 +78,9 @@ public class AppExceptionHandler {
      */
     @ExceptionHandler(BindException.class)
     public Resp handleBindException(BindException e) {
+        printStack(e);
         String data = e.getBindingResult().getAllErrors()
                 .stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining());
-        return Resp.unProcess(data);
-    }
-
-    /**
-     * 统一处理约束违反异常
-     *
-     * @return 违反约束信息, code: 400, msg: 参数校验异常
-     */
-    @ExceptionHandler(ConstraintViolationException.class)
-    public Resp handleConstraintViolationException(ConstraintViolationException e) {
-        String data =
-                e.getConstraintViolations().stream().map(ConstraintViolation::getMessage)
-                        .collect(Collectors.joining());
         return Resp.unProcess(data);
     }
 
@@ -103,6 +93,7 @@ public class AppExceptionHandler {
      */
     @ExceptionHandler(ServiceExp.class)
     public Resp handleServiceException(ServiceExp e) {
+        printStack(e);
         switch (e.getExpCode()) {
             case PERMISSION_DENIED:
                 return Resp.denied();
@@ -120,12 +111,31 @@ public class AppExceptionHandler {
     }
 
     /**
+     * 权限异常统一处理, 根据 expCode细分
+     *
+     * @param e 权限异常
+     */
+    @ExceptionHandler(AuthExp.class)
+    public Resp handleAuthException(AuthExp e) {
+        printStack(e);
+        switch (e.getExpCode()) {
+            case UNAUTHORIZED:
+                return Resp.noAuth();
+            case PERMISSION_DENIED:
+                return Resp.denied();
+            default:
+                return Resp.fail("Auth exception: " + e.getMessage());
+        }
+    }
+
+    /**
      * 数据层异常处理
      *
      * @param e sql处理异常
      */
     @ExceptionHandler(DaoExp.class)
     public Resp handleDaoException(DaoExp e) {
+        printStack(e);
         return new Resp().setCode(Code.SYSTEM_EXCEPTION.getVal())
                 .setMsg(e.getMessage())
                 .setExpStack(e.getStackTrace());
@@ -138,6 +148,7 @@ public class AppExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public Resp handleException(Exception e) {
+        printStack(e);
         String msg = "未知异常: " + e.getClass().getName() + ", 请向开发人员反馈 expStack";
         try {
             if (!e.getMessage().isEmpty()) {
@@ -148,6 +159,17 @@ public class AppExceptionHandler {
         return new Resp().setCode(Code.SYSTEM_EXCEPTION.getVal())
                 .setMsg(msg)
                 .setExpStack(e.getStackTrace());
+    }
+
+    private void printStack(Exception e) {
+        log.error("============ ERROR ============\n{}", e.getMessage());
+        if (e instanceof BaseException) {
+            if (((BaseException) e).getOriginalExp() != null) {
+                ((BaseException) e).getOriginalExp().printStackTrace();
+            }
+        } else {
+            e.printStackTrace();
+        }
     }
 
 }
