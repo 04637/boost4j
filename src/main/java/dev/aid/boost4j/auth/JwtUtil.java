@@ -112,17 +112,17 @@ public class JwtUtil {
      * @param token 待解析 token
      * @return 解析出的 UserInfoVO; 校验失败时 return null
      */
-    static User parseToken(String token) {
+    static AuthUser parseToken(String token) {
         if (StringUtils.isEmpty(token)) {
             return null;
         }
         try {
             JwtClaims jwtClaims = JwtUtil.checkJwt(token);
-            User user = new User();
-            user.setUserId(jwtClaims.getClaimValueAsString("userId"));
-            user.setUserRoles(jwtClaims.getStringListClaimValue("userRole")
+            AuthUser authUser = new AuthUser();
+            authUser.setUserId(jwtClaims.getClaimValueAsString("userId"));
+            authUser.setUserRoles(jwtClaims.getStringListClaimValue("userRole")
                     .stream().map(UserRole::valueOf).collect(Collectors.toSet()).toArray(UserRole.values()));
-            return user;
+            return authUser;
         } catch (InvalidJwtException | MalformedClaimException e) {
             return null;
         }
@@ -132,24 +132,3 @@ public class JwtUtil {
     }
 }
 
-class User {
-    private String userId;
-    private UserRole[] userRoles;
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserRoles(UserRole[] userRoles) {
-        this.userRoles = userRoles;
-    }
-
-    public UserRole[] getUserRoles() {
-        return userRoles;
-    }
-}

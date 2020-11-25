@@ -23,15 +23,15 @@ public class Resp {
     // 响应代码
     private int code;
 
-    /**
-     * 处理完成, 响应处理完成消息
-     *
-     * @param msg 填充响应消息
-     * @return Resp msg=> ${msg}; code=> "200"
-     */
-    public static Resp ok(String msg) {
-        return new Resp().setCode(Code.OK.getVal()).setMsg(msg).setSucceed(true);
-    }
+    // /**
+    //  * 处理完成, 响应处理完成消息
+    //  *
+    //  * @param msg 填充响应消息
+    //  * @return Resp msg=> ${msg}; code=> "200"
+    //  */
+    // public static Resp ok(String msg) {
+    //     return new Resp().setCode(Code.OK.getVal()).setMsg(msg).setSucceed(true);
+    // }
 
     /**
      * 处理完成, 正常响应结果

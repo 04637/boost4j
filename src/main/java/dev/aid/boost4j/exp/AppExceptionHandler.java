@@ -1,5 +1,6 @@
 package dev.aid.boost4j.exp;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
@@ -95,10 +96,6 @@ public class AppExceptionHandler {
     public Resp handleServiceException(ServiceExp e) {
         printStack(e);
         switch (e.getExpCode()) {
-            case PERMISSION_DENIED:
-                return Resp.denied();
-            case UNAUTHORIZED:
-                return Resp.noAuth();
             case NOT_FOUND:
                 return Resp.notFound(e.getMessage());
             case UNPROCESSABLE_ENTITY:
@@ -118,6 +115,11 @@ public class AppExceptionHandler {
     @ExceptionHandler(AuthExp.class)
     public Resp handleAuthException(AuthExp e) {
         printStack(e);
+        // 如果自定义消息不为空
+        if (!StringUtils.isEmpty(e.getMessage())) {
+            return new Resp().setMsg(e.getMessage()).setCode(e.getExpCode().getVal())
+                    .setSucceed(false);
+        }
         switch (e.getExpCode()) {
             case UNAUTHORIZED:
                 return Resp.noAuth();
@@ -162,7 +164,7 @@ public class AppExceptionHandler {
     }
 
     private void printStack(Exception e) {
-        log.error("============ ERROR ============\n{}", e.getMessage());
+        log.error("{} => {}", e.getClass().getSimpleName(), e.getMessage());
         if (e instanceof BaseException) {
             if (((BaseException) e).getOriginalExp() != null) {
                 ((BaseException) e).getOriginalExp().printStackTrace();

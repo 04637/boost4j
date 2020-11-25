@@ -1,11 +1,21 @@
 package dev.aid.boost4j.mbp;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
+import com.baomidou.mybatisplus.generator.InjectionConfig;
 import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
+import com.baomidou.mybatisplus.generator.config.FileOutConfig;
 import com.baomidou.mybatisplus.generator.config.GlobalConfig;
 import com.baomidou.mybatisplus.generator.config.PackageConfig;
 import com.baomidou.mybatisplus.generator.config.StrategyConfig;
+import com.baomidou.mybatisplus.generator.config.TemplateConfig;
+import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 代码生成器
@@ -27,15 +37,13 @@ public class CodeGenerator {
     private static final String AUTHOR = "04637@163.com";
     // 要生成代码的表名配置
     private static final String[] TABLES = {
-            // "data_interface",
-            // "project_info",
-            // "project_user",
-            // "table_code"
-            "user_info"
+            // todo 添加要生成的表名 例如:
+            "user_info",
+            "user_info1"
     };
     // ################# 生成器配置 end ##############
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         AutoGenerator mpg = new AutoGenerator();
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
@@ -49,6 +57,7 @@ public class CodeGenerator {
         // 为true时生成entity将继承Model类，单类即可完成基于单表的业务逻辑操作，按需开启
         gc.setActiveRecord(false);
         gc.setServiceName("%sService");
+        gc.setIdType(IdType.ASSIGN_UUID);
         mpg.setGlobalConfig(gc);
 
         // 数据源配置
@@ -67,8 +76,33 @@ public class CodeGenerator {
         // 设置模块名, 会在parent包下生成一个指定的模块包
         pc.setModuleName(null);
         pc.setMapper("dao");
-        pc.setXml("dao/mapper");
         mpg.setPackageInfo(pc);
+
+        // mapper 配置
+        InjectionConfig cfg = new InjectionConfig() {
+            @Override
+            public void initMap() {
+            }
+        };
+        String templatePath = "/templates/mapper.xml.vm";
+        // 自定义输出配置
+        List<FileOutConfig> focList = new ArrayList<>();
+        // 自定义配置会被优先输出
+        focList.add(new FileOutConfig(templatePath) {
+            @Override
+            public String outputFile(TableInfo tableInfo) {
+                // 自定义输出文件名 ， 如果你 Entity 设置了前后缀、此处注意 xml 的名称会跟着发生变化！！
+                return projectPath + "/src/main/resources/mapper/"
+                        + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
+            }
+        });
+        cfg.setFileOutConfigList(focList);
+        mpg.setCfg(cfg);
+
+        // 配置模板
+        TemplateConfig templateConfig = new TemplateConfig();
+        templateConfig.setXml(null);
+        mpg.setTemplate(templateConfig);
 
         // 策略配置
         StrategyConfig strategy = new StrategyConfig();
