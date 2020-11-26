@@ -31,16 +31,6 @@ import dev.aid.boost4j.util.UID;
 public class MybatisPlusConfig {
 
     /**
-     * 新的分页插件,一缓和二缓遵循mybatis的规则,需要设置 MybatisConfiguration#useDeprecatedExecutor = false 避免缓存出现问题(该属性会在旧插件移除后一同移除)
-     */
-    @Bean
-    public MybatisPlusInterceptor mybatisPlusInterceptor() {
-        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.POSTGRE_SQL));
-        return interceptor;
-    }
-
-    /**
      * 使用雪花算法代替ID生成, 为空时自动插入
      */
     @Bean
@@ -60,6 +50,10 @@ public class MybatisPlusConfig {
         sqlSessionFactoryBean.setDataSource(dataSource());
         sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver()
                 .getResources("classpath:/mapper/*Mapper.xml"));
+        // 分页插件
+        MybatisPlusInterceptor pageInterceptor = new MybatisPlusInterceptor();
+        pageInterceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.POSTGRE_SQL));
+        sqlSessionFactoryBean.setPlugins(pageInterceptor);
         return sqlSessionFactoryBean;
     }
 }

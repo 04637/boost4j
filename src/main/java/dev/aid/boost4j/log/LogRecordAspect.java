@@ -70,7 +70,12 @@ public class LogRecordAspect {
 
         // result的值就是被拦截方法的返回值
         Resp result = (Resp) pjp.proceed();
-        log.info("{} <= {}ms: {}", requestId, System.currentTimeMillis() - start, result);
+        long time = System.currentTimeMillis() - start;
+        if (time > 1000) {
+            log.info("{} <= {}s: {}", requestId, ((time / 100 * 100) / 1000.0), JSON.toJSONString(result));
+        } else {
+            log.info("{} <= {}ms: {}", requestId, time, JSON.toJSONString(result));
+        }
         return result;
     }
 

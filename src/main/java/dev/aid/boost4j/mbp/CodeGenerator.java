@@ -13,7 +13,6 @@ import com.baomidou.mybatisplus.generator.config.TemplateConfig;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,9 +40,11 @@ public class CodeGenerator {
             "user_info",
             "user_info1"
     };
+    // 是否使用lombok
+    private static final boolean USE_LOMBOK = false;
     // ################# 生成器配置 end ##############
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         AutoGenerator mpg = new AutoGenerator();
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
@@ -116,7 +117,9 @@ public class CodeGenerator {
         strategy.setControllerMappingHyphenStyle(false);
         strategy.setTablePrefix(pc.getModuleName() + "_");
         // 开启后将使用lombok注解代替set-get方法，false则生成set-get方法
-        strategy.setEntityLombokModel(true);
+        strategy.setEntityLombokModel(USE_LOMBOK);
+        // 链式模型
+        strategy.setChainModel(true);
         // 在实体类中移除is前缀
         strategy.setEntityBooleanColumnRemoveIsPrefix(false);
         strategy.setSkipView(true);

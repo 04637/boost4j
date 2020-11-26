@@ -21,13 +21,13 @@ An out-of-the-box library for java web.
 11. fhIM通知
 12. sonar通知
 13. 异步执行  https://juejin.im/post/6844903943739277320
-14. 类似mbp的类生成
-15. 日志直接获取对应class 
+14. 类似mbp的类生成  √
+15. 日志直接获取对应class  √
 16. maven打包成一个引用方便
-17. 接口层日志包裹打印 (考虑过滤器方式与切面方式)
+17. 接口层日志包裹打印 (考虑过滤器方式与切面方式) √
 ## 大
-1. 轻量缓存
-2. 接口文档生成
+1. 轻量缓存 https://www.baeldung.com/spring-cache-tutorial √
+2. 接口文档生成 https://github.com/smart-doc-group/smart-doc  √
 3. 配置热更新
 ## 需要嵌入式引入的需求
 6. 统一异常处理 √
