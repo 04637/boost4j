@@ -44,13 +44,6 @@
             <version>${spring.version}</version>
         </dependency>
 
-        <!-- 缓存 cache-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-cache</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-
         <!--mybatis plus-->
         <dependency>
             <groupId>com.baomidou</groupId>

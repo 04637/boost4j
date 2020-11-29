@@ -22,7 +22,7 @@ An out-of-the-box library for java web.
 12. sonar通知
 13. 异步执行  https://juejin.im/post/6844903943739277320
 14. 类似mbp的类生成  √
-15. 日志直接获取对应class  √
+15. 不使用lombok的日志注入 √
 16. maven打包成一个引用方便
 17. 接口层日志包裹打印 (考虑过滤器方式与切面方式) √
 ## 大

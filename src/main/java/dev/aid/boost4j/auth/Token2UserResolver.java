@@ -58,7 +58,7 @@ public class Token2UserResolver implements HandlerMethodArgumentResolver {
         // 校验多角色组
         if (auth.userRoles().length > 0) {
             for (UserRole authRole : auth.userRoles()) {
-                if (ArrayUtils.contains(authUser.getUserRoles(), authRole)) {
+                if (!ArrayUtils.contains(authUser.getUserRoles(), authRole)) {
                     throw new AuthExp("需要: " + Arrays.toString(auth.userRoles()) + ", " +
                             "现有权限为: " + Arrays.toString(authUser.getUserRoles()))
                             .setExpCode(Code.PERMISSION_DENIED);

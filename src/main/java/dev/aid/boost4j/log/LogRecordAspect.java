@@ -81,6 +81,9 @@ public class LogRecordAspect {
 
     public static Map<String, Object> getKeyAndValue(Object obj) {
         Map<String, Object> map = new HashMap<>();
+        if (obj == null) {
+            return map;
+        }
         // 得到类对象
         Class userCla = obj.getClass();
         /* 得到类中的所有属性集合 */

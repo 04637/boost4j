@@ -13,7 +13,8 @@ import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.lang.JoseException;
 
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
 import dev.aid.boost4j.exp.ServiceExp;
 
@@ -120,8 +121,13 @@ public class JwtUtil {
             JwtClaims jwtClaims = JwtUtil.checkJwt(token);
             AuthUser authUser = new AuthUser();
             authUser.setUserId(jwtClaims.getClaimValueAsString("userId"));
-            authUser.setUserRoles(jwtClaims.getStringListClaimValue("userRole")
-                    .stream().map(UserRole::valueOf).collect(Collectors.toSet()).toArray(UserRole.values()));
+            List<String> roles = jwtClaims.getStringListClaimValue("userRole");
+            List<UserRole> userRoles = new ArrayList<>();
+            for (String role :
+                    roles) {
+                userRoles.add(UserRole.valueOf(role));
+            }
+            authUser.setUserRoles(userRoles.toArray(new UserRole[]{}));
             return authUser;
         } catch (InvalidJwtException | MalformedClaimException e) {
             return null;
