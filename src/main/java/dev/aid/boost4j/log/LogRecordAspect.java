@@ -66,15 +66,15 @@ public class LogRecordAspect {
         }
         String requestId = UID.next();
         long start = System.currentTimeMillis();
-        log.info("{} => {}: {}, params: {}", requestId, method, url, params);
+        log.info("{}: {} => {}\nparams: {}", method, url, requestId, params);
 
         // result的值就是被拦截方法的返回值
         Resp result = (Resp) pjp.proceed();
         long time = System.currentTimeMillis() - start;
         if (time > 1000) {
-            log.info("{} <= {}s: {}", requestId, ((time / 100 * 100) / 1000.0), JSON.toJSONString(result));
+            log.info("{}: {} <= {}s: \nresp: {}", url, requestId, ((time / 100 * 100) / 1000.0), JSON.toJSONString(result));
         } else {
-            log.info("{} <= {}ms: {}", requestId, time, JSON.toJSONString(result));
+            log.info("{}: {} <= {}ms: \nresp: {}", url, requestId, time, JSON.toJSONString(result));
         }
         return result;
     }

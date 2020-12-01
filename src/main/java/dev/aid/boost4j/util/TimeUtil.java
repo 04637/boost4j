@@ -1,6 +1,7 @@
 package dev.aid.boost4j.util;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Calendar;
 
 /**
@@ -19,6 +20,14 @@ public class TimeUtil {
      */
     public static Timestamp toSqlTime(long time) {
         return toSqlTime(time + "");
+    }
+
+
+    /**
+     * 获取数据库当前时间戳
+     */
+    public static Timestamp now() {
+        return Timestamp.from(Instant.now());
     }
 
     /**

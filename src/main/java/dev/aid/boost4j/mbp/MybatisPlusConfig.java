@@ -32,6 +32,7 @@ public class MybatisPlusConfig {
 
     /**
      * 使用雪花算法代替ID生成, 为空时自动插入
+     * todo 有点问题, 未生效
      */
     @Bean
     public IdentifierGenerator identifierGenerator() {

@@ -11,6 +11,8 @@ import java.util.concurrent.ConcurrentMap;
 
 /**
  * cache封装分桶
+ * todo 用guava cacheBuilder重写
+ * https://www.cnblogs.com/rickiyang/p/11074159.html
  *
  * @author 04637@163.com
  * @date 2020/11/27
